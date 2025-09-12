@@ -131,14 +131,14 @@ const Index = () => {
             <div className="w-10 h-10 rounded-xl overflow-hidden">
               <img 
                 src={logoImage} 
-                alt="CampusConnect Logo" 
+                alt="devNest Logo" 
                 className="w-full h-full object-cover"
               />
             </div>
-            <h3 className="text-xl font-bold">CampusConnect</h3>
+            <h3 className="text-xl font-bold">devNest</h3>
           </div>
           <p className="text-muted-foreground mb-6">Building stronger college communities, one connection at a time.</p>
-          <p className="text-sm text-muted-foreground">© 2024 CampusConnect. Made with ❤️ for students.</p>
+          <p className="text-sm text-muted-foreground">© 2024 devNest. Made with ❤️ for students.</p>
         </div>
       </footer>
     </div>

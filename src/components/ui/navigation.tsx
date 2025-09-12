@@ -23,12 +23,12 @@ export const Navigation = () => {
             <div className="w-10 h-10 rounded-xl overflow-hidden">
               <img 
                 src={logoImage} 
-                alt="CampusConnect Logo" 
+                alt="devNest Logo" 
                 className="w-full h-full object-cover"
               />
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              CampusConnect
+              devNest
             </h1>
           </div>
 

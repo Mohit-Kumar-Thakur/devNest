@@ -39,7 +39,7 @@ export const StatsSection = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Platform Impact</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            See how CampusConnect is transforming student engagement and academic collaboration
+            See how devNest is transforming student engagement and academic collaboration
           </p>
         </div>
 
