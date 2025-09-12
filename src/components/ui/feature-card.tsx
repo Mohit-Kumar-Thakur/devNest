@@ -16,6 +16,7 @@ interface FeatureCardProps {
   }>;
   className?: string;
   style?: React.CSSProperties;
+  href?: string;
 }
 
 export const FeatureCard = ({ 
@@ -25,7 +26,8 @@ export const FeatureCard = ({
   buttonText, 
   posts,
   className,
-  style 
+  style,
+  href = "/course-updates"
 }: FeatureCardProps) => {
   return (
     <Card className={`group hover:shadow-hover transition-smooth ${className}`} style={style}>
@@ -63,7 +65,7 @@ export const FeatureCard = ({
           className="w-full gradient-primary text-primary-foreground shadow-card group-hover:shadow-hover transition-smooth"
           asChild
         >
-          <Link to="/course-updates">{buttonText}</Link>
+          <Link to={href}>{buttonText}</Link>
         </Button>
       </CardContent>
     </Card>

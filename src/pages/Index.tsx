@@ -81,6 +81,7 @@ const Index = () => {
               posts={anonymousPosts}
               className="animate-slideUp"
               style={{ animationDelay: '0.2s' }}
+              href="/anonymous-posts"
             />
 
             <FeatureCard
