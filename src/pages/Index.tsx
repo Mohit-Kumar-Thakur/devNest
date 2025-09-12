@@ -4,6 +4,7 @@ import { FeatureCard } from '@/components/ui/feature-card';
 import { StatsSection } from '@/components/ui/stats-section';
 import { BookOpen, MessageSquare, Calendar, Users, Zap, Shield } from 'lucide-react';
 import logoImage from '@/assets/logo.png';
+import footerLogoImage from '@/assets/devnest-footer-logo.png';
 
 const Index = () => {
   const courseUpdates = [
@@ -127,15 +128,12 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-card border-t border-border py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="w-10 h-10 rounded-xl overflow-hidden">
-              <img 
-                src={logoImage} 
-                alt="devNest Logo" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <h3 className="text-xl font-bold">devNest</h3>
+          <div className="flex justify-center mb-6">
+            <img 
+              src={footerLogoImage} 
+              alt="devNest Logo" 
+              className="h-16 w-auto"
+            />
           </div>
           <p className="text-muted-foreground mb-6">Building stronger college communities, one connection at a time.</p>
           <p className="text-sm text-muted-foreground">© 2024 devNest. Made with ❤️ for students.</p>
