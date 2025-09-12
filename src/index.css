@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Dark Academic Theme as Primary */
-    --background: 221 39% 8%;
+    --background: 0 0% 0%;
     --foreground: 255 255 255;
 
     /* Card System */
