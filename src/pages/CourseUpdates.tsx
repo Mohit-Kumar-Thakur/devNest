@@ -235,10 +235,40 @@ const CourseUpdates = () => {
 
   // Load enrolled courses from localStorage on mount
   useEffect(() => {
-    const savedCourses = localStorage.getItem('enrolledCourses');
-    if (savedCourses) {
-      setEnrolledCourses(JSON.parse(savedCourses));
-      setIsFirstTime(false);
+    try {
+      const saved = localStorage.getItem('enrolledCourses');
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      let enrollments: EnrolledCourse[] = [];
+
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        if (parsed[0]?.course && parsed[0]?.teacher) {
+          // Already in new format
+          enrollments = parsed as EnrolledCourse[];
+        } else if (parsed[0]?.code || parsed[0]?.id) {
+          // Migrate old format (array of Course objects)
+          enrollments = (parsed as any[])
+            .map((old) => {
+              const course = availableCourses.find(c => c.code === old.code || c.id === old.id);
+              if (!course) return null;
+              const teacher = course.teachers.find(t => t.name === old.professor) || course.teachers[0];
+              return {
+                courseId: course.id,
+                teacherId: teacher.id,
+                course,
+                teacher,
+              } as EnrolledCourse;
+            })
+            .filter(Boolean) as EnrolledCourse[];
+        }
+      }
+
+      if (enrollments.length > 0) {
+        setEnrolledCourses(enrollments);
+        setIsFirstTime(false);
+      }
+    } catch (e) {
+      console.warn('Failed to load enrolled courses from storage', e);
     }
   }, []);
 
@@ -309,8 +339,8 @@ const CourseUpdates = () => {
   const filteredUpdates = mockUpdates.filter(update => {
     // Only show updates for enrolled courses with matching teachers
     const isEnrolledInCourse = enrolledCourses.some(enrollment => 
-      enrollment.course.code === update.courseCode && 
-      enrollment.teacher.name === update.professor
+      enrollment?.course?.code === update.courseCode && 
+      enrollment?.teacher?.name === update.professor
     );
     if (!isEnrolledInCourse && enrolledCourses.length > 0) return false;
     
