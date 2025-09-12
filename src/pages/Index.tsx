@@ -132,7 +132,7 @@ const Index = () => {
             <img 
               src={footerLogoImage} 
               alt="devNest Logo" 
-              className="h-16 w-auto"
+              className="h-24 w-auto"
             />
           </div>
           <p className="text-muted-foreground mb-6">Building stronger college communities, one connection at a time.</p>
