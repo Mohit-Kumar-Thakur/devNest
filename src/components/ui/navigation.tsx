@@ -27,8 +27,10 @@ export const Navigation = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              devNest
+            <h1 className="text-xl font-bold">
+              <span className="text-logo-gray">dev</span>
+              <span className="text-primary">Nes</span>
+              <span className="text-logo-orange">t</span>
             </h1>
           </div>
 
