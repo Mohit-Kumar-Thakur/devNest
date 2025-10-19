@@ -337,12 +337,15 @@ const CourseUpdates = () => {
   };
 
   const filteredUpdates = mockUpdates.filter(update => {
-    // Only show updates for enrolled courses with matching teachers
-    const isEnrolledInCourse = enrolledCourses.some(enrollment => 
-      enrollment?.course?.code === update.courseCode && 
-      enrollment?.teacher?.name === update.professor
-    );
-    if (!isEnrolledInCourse && enrolledCourses.length > 0) return false;
+    // If no courses enrolled (user skipped), show all updates
+    // Otherwise, only show updates for enrolled courses with matching teachers
+    if (enrolledCourses.length > 0) {
+      const isEnrolledInCourse = enrolledCourses.some(enrollment => 
+        enrollment?.course?.code === update.courseCode && 
+        enrollment?.teacher?.name === update.professor
+      );
+      if (!isEnrolledInCourse) return false;
+    }
     
     const matchesSearch = update.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          update.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
