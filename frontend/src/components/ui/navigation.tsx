@@ -45,7 +45,10 @@ export const Navigation = () => {
                 <item.icon className="w-4 h-4" />
                 <span className="font-medium">{item.name}</span>
               </a>
+              
             ))}
+            
+
           </div>
 
           {/* Actions */}

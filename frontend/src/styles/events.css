@@ -1,0 +1,116 @@
+.events-container {
+    padding: 30px;
+}
+
+.events-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.events-grid {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.event-card {
+    background: #1a1a1a;
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid #333;
+    color: white;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 4px 14px rgba(255, 255, 255, 0.1);
+}
+
+.event-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+.platform-tag {
+    font-size: 12px;
+    background: #333;
+    padding: 5px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+.event-card h2 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.event-card p {
+    margin: 5px 0;
+    color: #ddd;
+}
+
+.register-btn {
+    background-color: rgb(59, 130, 246);
+    padding: 8px 12px;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.register-btn:hover {
+    background-color: rgb(37, 99, 235);
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #111;
+    color: white;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.admin-event-card:hover {
+    transform: translateY(-4px);
+    transition: 0.2s ease-in-out;
+}
+
+.modal-overlay {
+    animation: fadeIn 0.3s;
+}
+
+.modal-box {
+    animation: popIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
