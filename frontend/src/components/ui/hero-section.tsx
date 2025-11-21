@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Users, MessageCircle, Calendar } from 'lucide-react';
+import { ArrowRight, Users, MessageCircle, Calendar, Rocket } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext'; // Import auth context
 import heroImage from '@/assets/college-hero.jpg';
 
 const stats = [
@@ -10,6 +11,8 @@ const stats = [
 ];
 
 export const HeroSection = () => {
+  const { user, token } = useAuth(); // Get auth state
+
   return (
     <section className="relative min-h-[600px] gradient-hero overflow-hidden">
       {/* Background Image */}
@@ -25,39 +28,84 @@ export const HeroSection = () => {
       {/* Content */}
       <div className="relative container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center animate-fadeIn">
+          {/* Dynamic Heading based on authentication */}
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            Your College{' '}
-            <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              Community Hub
-            </span>
+            {token ? (
+              <>
+                Welcome back,{' '}
+                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  {user?.name}!
+                </span>
+              </>
+            ) : (
+              <>
+                Your College{' '}
+                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  Community Hub
+                </span>
+              </>
+            )}
           </h1>
           
+          {/* Dynamic Subtitle based on authentication */}
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Stay connected with course updates, share thoughts anonymously, discover events, 
-            and build lasting connections in your academic community.
+            {token 
+              ? `Ready to explore course updates, share your thoughts, and discover exciting events? Your community awaits!`
+              : `Stay connected with course updates, share thoughts anonymously, discover events, and build lasting connections in your academic community.`
+            }
           </p>
 
+          {/* Dynamic Buttons based on authentication */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button 
-              size="lg" 
-              className="gradient-primary text-primary-foreground shadow-hover transition-bounce group"
-              asChild
-            >
-              <Link to="/auth">
-                Get Started
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-smooth" />
-              </Link>
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-primary/20 hover:bg-primary/5"
-            >
-              Learn More
-            </Button>
+            {token ? (
+              // Show dashboard and explore buttons when logged in
+              <>
+                <Button 
+                  size="lg" 
+                  className="gradient-primary text-primary-foreground shadow-hover transition-bounce group"
+                  asChild
+                >
+                  <Link to="/dashboard">
+                    Go to Dashboard
+                    <Rocket className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-smooth" />
+                  </Link>
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-primary/20 hover:bg-primary/5"
+                  asChild
+                >
+                  <Link to="/events">
+                    Explore Events
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              // Show get started and learn more when not logged in
+              <>
+                <Button 
+                  size="lg" 
+                  className="gradient-primary text-primary-foreground shadow-hover transition-bounce group"
+                  asChild
+                >
+                  <Link to="/auth">
+                    Get Started
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-smooth" />
+                  </Link>
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-primary/20 hover:bg-primary/5"
+                >
+                  Learn More
+                </Button>
+              </>
+            )}
           </div>
 
-          {/* Stats */}
+          {/* Stats - Always visible */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-slideUp">
             {stats.map((stat, index) => (
               <div 
@@ -73,6 +121,15 @@ export const HeroSection = () => {
               </div>
             ))}
           </div>
+
+          {/* Welcome message for authenticated users */}
+          {token && (
+            <div className="mt-8 p-4 bg-primary/5 rounded-lg border border-primary/20 max-w-md mx-auto">
+              <p className="text-sm text-primary">
+                <strong>Welcome back!</strong> You're all set to explore everything devNest has to offer.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

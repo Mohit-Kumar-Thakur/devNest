@@ -1,6 +1,5 @@
 import scrapeUnstop from "../scrapers/unstop.js";
 import scrapeDevpost from "../scrapers/Devpost.js";
-import scrapeKaggle from "../scrapers/kaggle.js";
 import scrapeGitHubHackathons from "../scrapers/githubEvents.js"; // if this exists
 
 import Event from "../models/Events.js";
@@ -23,15 +22,13 @@ const fetchAllEvents = async() => {
 
     let unstop = [];
     let devpost = [];
-    let kaggle = [];
     let github = [];
 
     try { unstop = await scrapeUnstop(); } catch {}
     try { devpost = await scrapeDevpost(); } catch {}
-    try { kaggle = await scrapeKaggle(); } catch {}
     try { github = await scrapeGitHubHackathons(); } catch {}
 
-    let allEvents = [...unstop, ...devpost, ...kaggle, ...github];
+    let allEvents = [...unstop, ...devpost, ...github];
 
     allEvents = allEvents.filter(isTechEvent);
     allEvents = allEvents.filter(ev => ev.registrationLink);

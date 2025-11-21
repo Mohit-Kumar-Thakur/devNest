@@ -1,32 +1,41 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import { generateUserHash } from "../utils/securityUtils.js";
 
-export const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (token == null) {
-        return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ error: 'Invalid token' });
+export const protect = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ message: "Not authorized, no token" });
         }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id).select("-password");
+        
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        // Ensure userHash exists
+        if (!user.userHash) {
+            console.log('Generating missing userHash for user:', user.email);
+            try {
+                // Generate userHash if missing
+                user.userHash = generateUserHash(user._id.toString(), user.email);
+                await user.save();
+                console.log('Generated userHash:', user.userHash);
+            } catch (hashError) {
+                console.error('Error generating userHash:', hashError);
+                return res.status(500).json({ 
+                    message: "User security configuration error" 
+                });
+            }
+        }
+
         req.user = user;
         next();
-    });
-};
-
-export const optionalAuth = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if (!err) {
-                req.user = user;
-            }
-        });
+    } catch (error) {
+        console.error("Auth middleware error:", error);
+        return res.status(401).json({ message: "Not authorized, token failed" });
     }
-    next();
 };

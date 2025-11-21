@@ -50,7 +50,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+        {/* tell me about upar wala section*/}
       <Navigation />
+      {/* tell me about You College Community Hub*/}
       <HeroSection />
       
       {/* Main Features */}
@@ -124,7 +126,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+    {/* tell me about platform Impact*/}
       <StatsSection />
 
       {/* Footer */}
@@ -138,7 +140,7 @@ const Index = () => {
             />
           </div>
           <p className="text-muted-foreground mb-6">Building stronger college communities, one connection at a time.</p>
-          <p className="text-sm text-muted-foreground">© 2024 devNest. Made with ❤️ for students.</p>
+          <p className="text-sm text-muted-foreground">© 2025 devNest. Made with ❤️ for students.</p>
         </div>
       </footer>
     </div>

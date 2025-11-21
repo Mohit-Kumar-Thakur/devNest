@@ -21,6 +21,9 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logoImage from '@/assets/logo.png';
+import { useAuth } from '@/context/AuthContext'; // Add this import
+import { LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; 
 
 interface Course {
   id: string;
@@ -232,7 +235,18 @@ const CourseUpdates = () => {
   const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
   const [courseTeacherSelections, setCourseTeacherSelections] = useState<Record<string, string>>({});
   const [courseBatchSelections, setCourseBatchSelections] = useState<Record<string, string>>({});
+  const { logout } = useAuth(); // Get logout function from context
+  const navigate = useNavigate();
+  const handleLogout = () => {
+  logout(); // Call the logout function from context
+  navigate('/'); // Redirect to home page after logout
+  };
 
+const handleLogoutWithConfirmation = () => {
+  if (window.confirm('Are you sure you want to logout?')) {
+    handleLogout();
+  }
+};
   // Load enrolled courses from localStorage on mount
   useEffect(() => {
     try {
@@ -660,9 +674,15 @@ const CourseUpdates = () => {
               <Button variant="outline" size="sm" asChild>
                 <Link to="/dashboard">Dashboard</Link>
               </Button>
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/auth">Sign In</Link>
-              </Button>
+              <Button 
+  variant="outline" 
+  size="sm" 
+  onClick={handleLogoutWithConfirmation}
+  className="gradient-primary text-primary-foreground shadow-soft"
+>
+  <LogOut className="w-4 h-4 mr-2" />
+  Logout
+</Button>
             </div>
           </div>
         </div>

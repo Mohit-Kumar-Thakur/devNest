@@ -10,6 +10,9 @@ import connectDB from "./config/db.js";
 import eventRoutes from "./routes/EventRoutes.js";
 import postRoutes from "./routes/posts.js";
 import commentRoutes from "./routes/comments.js";
+import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/AdminRoutes.js";
+
 
 // Cron Job
 import fetchAllEvents from "./cron/fetchEvents.js";
@@ -17,6 +20,8 @@ import fetchAllEvents from "./cron/fetchEvents.js";
 dotenv.config();
 const app = express();
 
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
 // Security + Basic Middleware
 app.use(helmet());
 app.use(cors());
@@ -38,6 +43,9 @@ app.use("/api/events", eventRoutes);
 // app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+
 
 // Health Check
 app.get("/api/health", (req, res) => {

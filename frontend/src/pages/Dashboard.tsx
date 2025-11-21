@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,18 +13,49 @@ import {
   Award,
   TrendingUp 
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import logoImage from '@/assets/logo.png';
 
 const Dashboard = () => {
-  const [user] = useState({
-    name: 'John Doe',
-    email: 'john.doe@university.edu',
+  const { user: authUser, logout, token, loading } = useAuth();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!loading && !token) {
+      navigate('/auth?redirect=/dashboard');
+      return;
+    }
+    
+    // Set loading false when auth is checked
+    if (!loading) {
+      setIsLoading(false);
+    }
+  }, [token, loading, navigate]);
+
+  // Show loading state
+  if (loading || isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Use real user data from auth context
+  const user = {
+    name: authUser?.name || 'User',
+    email: authUser?.email || 'user@example.com',
     avatar: null,
     joinDate: 'September 2024',
     points: 1250,
     level: 'Active Contributor'
-  });
+  };
 
   const stats = [
     { label: 'Posts Created', value: '24', icon: MessageSquare, color: 'text-primary' },
@@ -41,8 +72,14 @@ const Dashboard = () => {
   ];
 
   const handleLogout = () => {
-    // TODO: Implement Supabase logout
-    alert('Logout functionality requires Supabase integration!');
+    logout();
+    navigate('/');
+  };
+
+  const handleLogoutWithConfirmation = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      handleLogout();
+    }
   };
 
   return (
@@ -73,7 +110,12 @@ const Dashboard = () => {
               <Button variant="ghost" size="sm">
                 <Settings className="w-4 h-4" />
               </Button>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleLogoutWithConfirmation}
+                className="gradient-primary text-primary-foreground shadow-soft"
+              >
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </Button>
@@ -90,14 +132,14 @@ const Dashboard = () => {
               <User className="w-8 h-8 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Welcome back, {user.name}! 👋</h1>
-              <p className="text-muted-foreground">
-                Member since {user.joinDate} • {user.points} points earned
-              </p>
-              <Badge variant="secondary" className="mt-1">
-                <TrendingUp className="w-3 h-3 mr-1" />
-                {user.level}
-              </Badge>
+              <h1 className="text-3xl font-bold">Welcome back, {user.name}!</h1>
+              <div className="flex items-center gap-2 mt-1">
+                {authUser?.role && (
+                  <Badge variant="outline" className="bg-blue-100 text-blue-800">
+                    {authUser.role}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -150,24 +192,31 @@ const Dashboard = () => {
                   <h3 className="font-medium mb-3">Explore devNest</h3>
                   <div className="space-y-2">
                     <Button variant="outline" className="w-full justify-start" asChild>
-                      <Link to="/#courses">
+                      <Link to="/course-updates">
                         <BookOpen className="w-4 h-4 mr-2" />
                         Course Updates
                       </Link>
                     </Button>
                     <Button variant="outline" className="w-full justify-start" asChild>
-                      <Link to="/#anonymous">
+                      <Link to="/anonymous-posts">
                         <MessageSquare className="w-4 h-4 mr-2" />
                         Anonymous Posts
                       </Link>
                     </Button>
                     <Button variant="outline" className="w-full justify-start" asChild>
-                      <Link to="/#events">
+                      <Link to="/events">
                         <Calendar className="w-4 h-4 mr-2" />
                         Events
                       </Link>
                     </Button>
-                    
+                    {authUser?.role === 'admin' && (
+                      <Button variant="outline" className="w-full justify-start" asChild>
+                        <Link to="/admin-events">
+                          <Settings className="w-4 h-4 mr-2" />
+                          Admin Events
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -185,14 +234,6 @@ const Dashboard = () => {
               </Card>
             </div>
           </div>
-        </div>
-
-        {/* Note about Supabase */}
-        <div className="mt-8 p-4 bg-card/50 rounded-lg border border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            <strong>Note:</strong> This dashboard shows demo data. Connect to Supabase to display real user information, 
-            authentication state, and dynamic content based on user activity.
-          </p>
         </div>
       </div>
     </div>
