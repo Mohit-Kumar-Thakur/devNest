@@ -421,3 +421,62 @@ export const getUsers = async (req, res) => {
         res.status(500).json({ message: "Server error fetching users" });
     }
 };
+
+// Get all anonymous posts to identify authors
+export const getAnonymousPosts = async (req, res) => {
+    try {
+        const { page = 1, limit = 50 } = req.query;
+        const skip = (page - 1) * limit;
+
+        console.log('🔄 Fetching anonymous posts...');
+
+        // Get ALL posts (or filter by isAnonymous if you have that field)
+        const posts = await Post.find({})
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        console.log(`📝 Found ${posts.length} total posts`);
+
+        const postsWithAuthors = await Promise.all(
+            posts.map(async (post) => {
+                // Find the real user behind the post
+                const author = await User.findOne({ userHash: post.authorHash });
+                
+                console.log(`👤 Post ${post._id}:`, {
+                    content: post.content?.substring(0, 50) + '...',
+                    authorHash: post.authorHash,
+                    displayAuthor: post.author, // The anonymous display name
+                    realAuthor: author ? author.name : 'Not found',
+                    isAnonymous: !author || author.name !== post.author // Check if it's anonymous
+                });
+
+                return {
+                    ...post.toObject(),
+                    id: post._id,
+                    authorInfo: author ? {
+                        id: author._id,
+                        name: author.name,
+                        email: author.email,
+                        role: author.role,
+                        reportedCount: author.reportedCount,
+                        isBanned: author.isBanned,
+                        createdAt: author.createdAt
+                    } : null,
+                    // Flag if this is an anonymous post
+                    isAnonymous: !author || (author.name !== post.author)
+                };
+            })
+        );
+
+        res.json({
+            posts: postsWithAuthors,
+            total: await Post.countDocuments(),
+            page: parseInt(page),
+            totalPages: Math.ceil(await Post.countDocuments() / limit)
+        });
+    } catch (error) {
+        console.error("Get anonymous posts error:", error);
+        res.status(500).json({ message: "Server error fetching anonymous posts" });
+    }
+};

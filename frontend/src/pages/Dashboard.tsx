@@ -209,6 +209,14 @@ const Dashboard = () => {
                         Events
                       </Link>
                     </Button>
+                    {authUser?.role === 'admin' && (
+                      <Button variant="outline" className="w-full justify-start" asChild>
+                        <Link to="/admin-dashboard">
+                          <Settings className="w-4 h-4 mr-2" />
+                          Admin Dashboard
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

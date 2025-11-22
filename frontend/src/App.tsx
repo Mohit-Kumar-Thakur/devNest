@@ -15,7 +15,7 @@ import AdminEvents from "./pages/AdminEvents";
 
 // Add these imports
 import AdminRegister from "./pages/AdminRegister";
-import AdminDashboard from "./pages/AdminDashboard";
+
 
 //auth
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -24,6 +24,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import SendOTP from "./pages/SendOTP";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
+import AdminDashboard from "./components/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
