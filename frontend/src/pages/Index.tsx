@@ -2,9 +2,11 @@ import { Navigation } from '@/components/ui/navigation';
 import { HeroSection } from '@/components/ui/hero-section';
 import { FeatureCard } from '@/components/ui/feature-card';
 import { StatsSection } from '@/components/ui/stats-section';
+import { CardsCarousel } from '@/components/ui/cards-carousel'; // NEW IMPORT
 import { BookOpen, MessageSquare, Calendar, Users, Zap, Shield } from 'lucide-react';
 import logoImage from '@/assets/logo.png';
 import footerLogoImage from '@/assets/devnest-footer-logo.png';
+import Spline from '@splinetool/react-spline';
 
 const Index = () => {
   const courseUpdates = [
@@ -48,14 +50,43 @@ const Index = () => {
     }
   ];
 
+  // NEW: Define the three cards that will carousel
+  const cardsData = [
+    {
+      id: 1,
+      title: "Course Updates",
+      description: "Get the latest announcements, schedule changes, and important notices from your professors in real-time.",
+      icon: BookOpen,
+      buttonText: "View All Updates",
+      posts: courseUpdates,
+      href: "/course-updates"
+    },
+    {
+      id: 2,
+      title: "Anonymous Posts",
+      description: "Share thoughts, ask questions, or give feedback anonymously in a safe and moderated environment.",
+      icon: MessageSquare,
+      buttonText: "Browse Posts",
+      posts: anonymousPosts,
+      href: "/anonymous-posts"
+    },
+    {
+      id: 3,
+      title: "Events & Opportunities",
+      description: "Discover hackathons, career fairs, workshops, and other exciting opportunities on campus.",
+      icon: Calendar,
+      buttonText: "Explore Events",
+      posts: upcomingEvents,
+      href: "/events"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
-        {/* tell me about upar wala section*/}
       <Navigation />
-      {/* tell me about You College Community Hub*/}
       <HeroSection />
       
-      {/* Main Features */}
+      {/* Main Features - REPLACED with 3D Cards Carousel */}
       <section className="py-16" id="courses">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -65,41 +96,11 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-            <FeatureCard
-              title="Course Updates"
-              description="Get the latest announcements, schedule changes, and important notices from your professors in real-time."
-              icon={BookOpen}
-              buttonText="View All Updates"
-              posts={courseUpdates}
-              className="animate-slideUp"
-            />
-
-            <FeatureCard
-              title="Anonymous Posts"
-              description="Share thoughts, ask questions, or give feedback anonymously in a safe and moderated environment."
-              icon={MessageSquare}
-              buttonText="Browse Posts"
-              posts={anonymousPosts}
-              className="animate-slideUp"
-              style={{ animationDelay: '0.2s' }}
-              href="/anonymous-posts"
-            />
-
-            <FeatureCard
-              title="Events & Opportunities"
-              description="Discover hackathons, career fairs, workshops, and other exciting opportunities on campus."
-              icon={Calendar}
-              buttonText="Explore Events"
-              posts={upcomingEvents}
-              className="animate-slideUp"
-              style={{ animationDelay: '0.4s' }}
-              href="/events"
-            />
-          </div>
+          {/* 3D Carousel of the three feature cards */}
+          <CardsCarousel cards={cardsData} />
 
           {/* Additional Features */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
             <div className="text-center group">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl mb-4 group-hover:bg-primary/20 transition-smooth">
                 <Users className="w-8 h-8 text-primary" />
@@ -126,7 +127,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-    {/* tell me about platform Impact*/}
+
       <StatsSection />
 
       {/* Footer */}

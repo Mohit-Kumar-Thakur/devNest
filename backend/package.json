@@ -9,6 +9,7 @@
         "dev": "nodemon server.js"
     },
     "dependencies": {
+        "@splinetool/react-spline": "^4.1.0",
         "axios": "^1.13.2",
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
@@ -27,5 +28,8 @@
     },
     "devDependencies": {
         "nodemon": "^3.0.1"
-    }
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }

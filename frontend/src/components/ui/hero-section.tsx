@@ -1,30 +1,29 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, MessageCircle, Calendar, Rocket } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext'; // Import auth context
-import heroImage from '@/assets/college-hero.jpg';
+import { useAuth } from '@/context/AuthContext';
+import { CountUp } from '@/components/ui/count-up'; // NEW IMPORT
+import heroImage from '@/assets/landing-bg.jpg';
+import Spline from '@splinetool/react-spline';
 
 const stats = [
-  { icon: Users, label: 'Active Students', value: '2,500+' },
-  { icon: MessageCircle, label: 'Posts Today', value: '150+' },
-  { icon: Calendar, label: 'Upcoming Events', value: '12' },
+  { icon: Users, label: 'Active Students', value: 2500 },
+  { icon: MessageCircle, label: 'Posts Today', value: 150 },
+  { icon: Calendar, label: 'Upcoming Events', value: 12 },
 ];
 
 export const HeroSection = () => {
-  const { user, token } = useAuth(); // Get auth state
+  const { user, token } = useAuth();
 
   return (
     <section className="relative min-h-[600px] gradient-hero overflow-hidden">
       {/* Background Image */}
-      <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-      
+      <div className="absolute inset-0 flex items-center justify-center z-0">
+        <div className="w-[4200px] h-[900px]">
+          <Spline scene="https://prod.spline.design/KfiqpIbAsWzPAjUU/scene.splinecode" />
+        </div>
+      </div>
+
       {/* Content */}
       <div className="relative container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center animate-fadeIn">
@@ -46,7 +45,7 @@ export const HeroSection = () => {
               </>
             )}
           </h1>
-          
+
           {/* Dynamic Subtitle based on authentication */}
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
             {token 
@@ -58,7 +57,6 @@ export const HeroSection = () => {
           {/* Dynamic Buttons based on authentication */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             {token ? (
-              // Show dashboard and explore buttons when logged in
               <>
                 <Button 
                   size="lg" 
@@ -82,7 +80,6 @@ export const HeroSection = () => {
                 </Button>
               </>
             ) : (
-              // Show get started and learn more when not logged in
               <>
                 <Button 
                   size="lg" 
@@ -105,7 +102,7 @@ export const HeroSection = () => {
             )}
           </div>
 
-          {/* Stats - Always visible */}
+          {/* Stats with CountUp Animation */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-slideUp">
             {stats.map((stat, index) => (
               <div 
@@ -116,7 +113,21 @@ export const HeroSection = () => {
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl mb-3 group-hover:bg-primary/20 transition-smooth">
                   <stat.icon className="w-6 h-6 text-primary" />
                 </div>
-                <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
+                
+                {/* CountUp Animation */}
+                <div className="text-2xl font-bold text-foreground mb-1">
+                  <CountUp
+                    value={stat.value}
+                    duration={2.5}
+                    suffix={stat.label.includes('Events') ? '' : '+'}
+                    separator=","
+                    triggerOnView={true}
+                    animationStyle="spring"
+                    colorScheme="default"
+                    className="text-2xl"
+                  />
+                </div>
+                
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
