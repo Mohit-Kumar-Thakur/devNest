@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
-import { Users, Shield, LogOut, Trash2, UserCheck } from 'lucide-react';
+import { Users, Shield, LogOut, Trash2, UserCheck, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import '@/styles/admin.css';
 
 interface User {
   id: string;
@@ -24,9 +23,33 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
+  // Spotlight Effect Logic
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const cards = document.querySelectorAll(".admin-glass-card");
+      
+      cards.forEach((card) => {
+        const htmlCard = card as HTMLElement;
+        const rect = htmlCard.getBoundingClientRect();
+        
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        htmlCard.style.setProperty("--x", x.toString());
+        htmlCard.style.setProperty("--y", y.toString());
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [users, loading]);
+
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
+      // Replace with your actual API endpoint
       const response = await fetch('http://localhost:5000/api/auth/users', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -35,7 +58,7 @@ const AdminDashboard = () => {
       
       if (response.ok) {
         const data = await response.json();
-        setUsers(data.users);
+        setUsers(data.users || []); // Ensure array fallback
       }
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -72,26 +95,32 @@ const AdminDashboard = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="admin-page-wrapper flex items-center justify-center">
+        <Activity className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="admin-page-wrapper bg-gray-900 min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <header className="admin-header">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <Shield className="w-8 h-8 text-blue-600" />
+              <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                <Shield className="w-6 h-6 text-blue-400" />
+              </div>
               <div>
-                <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-                <p className="text-gray-600">Welcome, {user?.name}</p>
+                <h1 className="text-xl admin-title-gradient">Admin Portal</h1>
+                <p className="text-xs text-gray-400">Welcome back, {user?.name}</p>
               </div>
             </div>
             <Button 
               onClick={handleLogout}
-              variant="outline"
-              className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
+              size="sm"
+              className="btn-glass-danger bg-transparent"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout
@@ -100,102 +129,104 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Stats */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Users className="w-8 h-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold">{users.length}</p>
-                  <p className="text-gray-600">Total Users</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Total Users Card */}
+          <div className="admin-glass-card p-6 flex items-center space-x-4">
+            <div className="stat-icon-wrapper">
+              <Users className="w-6 h-6 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-white">{users.length}</p>
+              <p className="text-sm text-gray-400">Total Registered Users</p>
+            </div>
+          </div>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <UserCheck className="w-8 h-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold">
-                    {users.filter(u => u.role === 'user').length}
-                  </p>
-                  <p className="text-gray-600">Regular Users</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Regular Users Card */}
+          <div className="admin-glass-card p-6 flex items-center space-x-4">
+            <div className="stat-icon-wrapper">
+              <UserCheck className="w-6 h-6 text-green-400" />
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-white">
+                {users.filter(u => u.role === 'user').length}
+              </p>
+              <p className="text-sm text-gray-400">Active Students</p>
+            </div>
+          </div>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Shield className="w-8 h-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold">
-                    {users.filter(u => u.role === 'admin').length}
-                  </p>
-                  <p className="text-gray-600">Administrators</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Admins Card */}
+          <div className="admin-glass-card p-6 flex items-center space-x-4">
+            <div className="stat-icon-wrapper">
+              <Shield className="w-6 h-6 text-purple-400" />
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-white">
+                {users.filter(u => u.role === 'admin').length}
+              </p>
+              <p className="text-sm text-gray-400">Administrators</p>
+            </div>
+          </div>
         </div>
 
-        {/* Users Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>User Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-3">Name</th>
-                    <th className="text-left p-3">Email</th>
-                    <th className="text-left p-3">Role</th>
-                    <th className="text-left p-3">Joined</th>
-                    <th className="text-left p-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((userItem) => (
-                    <tr key={userItem.id} className="border-b hover:bg-gray-50">
-                      <td className="p-3">{userItem.name}</td>
-                      <td className="p-3">{userItem.email}</td>
-                      <td className="p-3">
-                        <Badge 
-                          variant={userItem.role === 'admin' ? 'default' : 'secondary'}
-                          className={userItem.role === 'admin' ? 'bg-purple-100 text-purple-800' : ''}
+        {/* Users Table Card */}
+        <div className="admin-glass-card p-0">
+          <div className="p-6 border-b border-white/10">
+            <h2 className="text-lg font-bold text-white">User Management Database</h2>
+            <p className="text-sm text-gray-400">Manage access and roles for all platform users</p>
+          </div>
+          
+          <div className="admin-table-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((userItem) => (
+                  <tr key={userItem.id}>
+                    <td>
+                      <div className="font-medium text-white">{userItem.name}</div>
+                    </td>
+                    <td className="text-gray-400">{userItem.email}</td>
+                    <td>
+                      <span className={`admin-badge ${userItem.role === 'admin' ? 'role-admin' : 'role-user'}`}>
+                        {userItem.role.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="text-gray-400">
+                      {new Date(userItem.createdAt).toLocaleDateString()}
+                    </td>
+                    <td>
+                      {userItem.id !== user?.id && (
+                        <button
+                          onClick={() => handleDeleteUser(userItem.id)}
+                          className="p-2 hover:bg-red-500/20 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
+                          title="Delete User"
                         >
-                          {userItem.role}
-                        </Badge>
-                      </td>
-                      <td className="p-3">
-                        {new Date(userItem.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="p-3">
-                        {userItem.id !== user?.id && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteUser(userItem.id)}
-                            className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {users.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="text-center py-8 text-gray-500">
+                      No users found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,198 @@
+/* src/styles/admin.css */
+
+/* --- 1. Admin Page Wrapper --- */
+.admin-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  color: #ffffff;
+  
+  /* Deep Dark Gradient Background */
+  background: linear-gradient(
+    180deg, 
+    #000000 0%, 
+    #050505 50%, 
+    #000000 100%
+  );
+}
+
+/* Ambient Background Glows */
+.admin-page-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 40%), /* Blue for Admin */
+    radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.08) 0%, transparent 40%); /* Purple */
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- 2. Admin Header --- */
+.admin-header {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 1rem 0;
+}
+
+.admin-title-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+/* --- 3. Glass Card System (Shared Logic) --- */
+.admin-glass-card {
+  --border-size: 1px;
+  --spotlight-size: 300px;
+  --bg-spot-opacity: 0.15;
+  --radius: 12;
+
+  position: relative;
+  background: rgba(20, 20, 20, 0.4) ;
+  border: var(--border-size) solid rgba(255, 255, 255, 0.1);
+  border-radius: calc(var(--radius) * 1px);
+  color: white;
+  backdrop-filter: blur(16px) saturate(180%);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Spotlight Background */
+.admin-glass-card {
+  background-image: 
+    radial-gradient(
+      var(--spotlight-size) var(--spotlight-size) at
+      calc(var(--x, 50) * 1%) calc(var(--y, 50) * 1%),
+      rgba(96, 165, 250, var(--bg-spot-opacity)), /* Blue Spotlight */
+      transparent
+    );
+}
+
+/* Spotlight Border */
+.admin-glass-card::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--border-size) * -1);
+  border: var(--border-size) solid transparent;
+  border-radius: calc(var(--radius) * 1px);
+  background: radial-gradient(
+    calc(var(--spotlight-size) * 0.8) calc(var(--spotlight-size) * 0.8) at
+    calc(var(--x, 50) * 1%) calc(var(--y, 50) * 1%),
+    rgba(96, 165, 250, 0.6), 
+    transparent 100%
+  );
+  background-size: 100% 100%;
+  background-position: 50% 50%;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.admin-glass-card:hover::after {
+  opacity: 1;
+}
+
+/* --- 4. Stats Specifics --- */
+.stat-icon-wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- 5. Table Styles for Dark Mode --- */
+.admin-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-table td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* --- 6. Badges & Buttons --- */
+.admin-badge {
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.admin-badge.role-admin {
+  background: rgba(147, 51, 234, 0.15);
+  color: #c084fc;
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.admin-badge.role-user {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-glass-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  transition: all 0.2s;
+}
+
+.btn-glass-danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #f87171;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.btn-glass-outline {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-glass-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: white;
+}

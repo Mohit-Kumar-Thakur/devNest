@@ -1,0 +1,166 @@
+/* src/styles/landing.css */
+
+/* --- 1. Main Background Wrapper --- */
+.landing-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: white;
+  
+  /* UPDATED: Pure Black Background */
+  background-color: #000000;
+  
+  /* Optional: Very subtle texture or noise could go here, 
+     but keeping it pure black as requested */
+}
+
+/* Ambient Background Glows - Keeps the "Glossy" feel on the black background */
+.landing-page-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(ellipse at 20% 20%, rgba(7, 234, 230, 0.04) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 80%, rgba(5, 184, 181, 0.04) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- Typography --- */
+.landing-title-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #07eae6 50%, #05b8b5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* --- Glass Feature Cards & Stats --- */
+.landing-glass-card {
+  --border-size: 1px;
+  --spotlight-size: 200px;
+  --bg-spot-opacity: 0.1;
+  --radius: 16;
+  
+  position: relative;
+  padding: 30px 20px;
+  border-radius: calc(var(--radius) * 1px);
+  border: var(--border-size) solid rgba(255, 255, 255, 0.12); /* Slightly crisper border on black */
+  
+  /* Darker glass background for contrast against pure black */
+  background: rgba(20, 20, 20, 0.3); 
+  
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Spotlight Background Effect */
+.landing-glass-card {
+  background-image: 
+    radial-gradient(
+      var(--spotlight-size) var(--spotlight-size) at
+      calc(var(--x, 50) * 1%) calc(var(--y, 50) * 1%),
+      rgba(7, 234, 230, var(--bg-spot-opacity)), 
+      transparent
+    );
+}
+
+/* Spotlight Border Glow on Hover */
+.landing-glass-card::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--border-size) * -1);
+  border: var(--border-size) solid transparent;
+  border-radius: calc(var(--radius) * 1px);
+  
+  /* The Glow Gradient */
+  background: radial-gradient(
+    calc(var(--spotlight-size) * 0.75) calc(var(--spotlight-size) * 0.75) at
+    calc(var(--x, 50) * 1%) calc(var(--y, 50) * 1%),
+    rgba(7, 234, 230, 0.8), 
+    transparent 100%
+  );
+  background-size: 100% 100%;
+  background-position: 50% 50%;
+  
+  /* --- FIX START: Corrected Masking for Cross-Browser Support --- */
+  /* This mask logic creates a "border only" visibility */
+  
+  /* 1. WebKit Browsers (Chrome, Edge, Safari) */
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; /* This excludes the padding area, leaving only the border */
+  
+  /* 2. Standard (Firefox) */
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude; /* Standard equivalent of xor */
+  
+  /* --- FIX END --- */
+
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.landing-glass-card:hover::after {
+  opacity: 1;
+}
+
+.landing-glass-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(7, 234, 230, 0.3);
+}
+
+/* --- Stats Section Specifics --- */
+.stat-value-gradient {
+  font-size: 2.5rem; 
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(7, 234, 230, 0.15));
+}
+
+.landing-glass-card.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
+
+/* Icon Glow Container */
+.landing-icon-glow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.landing-glass-card:hover .landing-icon-glow {
+  background: rgba(7, 234, 230, 0.1);
+  border-color: rgba(7, 234, 230, 0.4);
+  box-shadow: 0 0 15px rgba(7, 234, 230, 0.2);
+}
+
+/* Icons */
+.icon-primary { color: #07eae6; }
+.icon-accent { color: #2dd4bf; }
+.icon-warning { color: #fbbf24; }
+.icon-destructive { color: #f87171; }
+
+/* Text */
+.landing-text-muted {
+  color: rgba(255, 255, 255, 0.5);
+}

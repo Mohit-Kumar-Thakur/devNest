@@ -1,0 +1,195 @@
+/* src/styles/anonymous.css */
+
+/* --- 1. Page Wrapper (Deep Gradient & Ambient Glow) --- */
+.anonymous-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  color: #ffffff;
+  
+  /* UPDATED: Deep gradient background instead of flat black */
+  background: linear-gradient(
+    180deg, 
+    #000000 0%, 
+    #020b0c 50%, /* Very subtle dark cyan tint in middle */
+    #000000 100%
+  );
+}
+
+/* Ambient Background Glows */
+.anonymous-page-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(7, 234, 230, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(5, 184, 181, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- 2. Typography & Header Spacing --- */
+.anon-header-section {
+  padding-top: 60px; /* Added top padding */
+  padding-bottom: 20px;
+  margin-bottom: 40px; /* Added margin separation */
+  position: relative;
+  z-index: 2;
+}
+
+.anon-title-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #07eae6 60%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 25px rgba(7, 234, 230, 0.2));
+  letter-spacing: -0.02em;
+}
+
+/* --- 3. Glossy Card System --- */
+/* Target specific glass class AND override Shadcn cards */
+.anon-glass-card,
+.anonymous-page-wrapper .card, 
+.anonymous-page-wrapper .bg-card {
+  --border-size: 1px;
+  --spotlight-size: 300px; /* Larger spotlight */
+  --bg-spot-opacity: 0.15;
+  --radius: 16;
+
+  position: relative;
+  
+  /* Glossy Background: Gradient + Transparency */
+  background: linear-gradient(
+    145deg, 
+    rgba(255, 255, 255, 0.07) 0%, 
+    rgba(255, 255, 255, 0.02) 100%
+  ) !important;
+  
+  /* Glass Rim Effect */
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.5), /* Drop shadow */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05); /* Inner rim */
+    
+  border: var(--border-size) solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: calc(var(--radius) * 1px);
+  color: white !important;
+  
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+/* Spotlight Background Effect */
+.anon-glass-card,
+.anonymous-page-wrapper .card {
+  background-image: 
+    radial-gradient(
+      var(--spotlight-size) var(--spotlight-size) at
+      calc(var(--x, 50) * 1%) calc(var(--y, 50) * 1%),
+      rgba(7, 234, 230, var(--bg-spot-opacity)), 
+      transparent
+    ) !important;
+}
+
+/* Spotlight Border Glow */
+.anon-glass-card::after,
+.anonymous-page-wrapper .card::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--border-size) * -1);
+  border: var(--border-size) solid transparent;
+  border-radius: calc(var(--radius) * 1px);
+  background: radial-gradient(
+    calc(var(--spotlight-size) * 0.8) calc(var(--spotlight-size) * 0.8) at
+    calc(var(--x, 50) * 1%) calc(var(--y, 50) * 1%),
+    rgba(7, 234, 230, 0.8), 
+    transparent 100%
+  );
+  background-size: 100% 100%;
+  background-position: 50% 50%;
+  
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.anon-glass-card:hover,
+.anonymous-page-wrapper .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 40px -10px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(7, 234, 230, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1); /* Brighter rim on hover */
+}
+
+.anon-glass-card:hover::after,
+.anonymous-page-wrapper .card:hover::after {
+  opacity: 1;
+}
+
+/* --- 4. Tabs Styling --- */
+.anon-tabs-container {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 6px;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.anon-tab-btn {
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.anon-tab-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.anon-tab-btn.active {
+  background: rgba(7, 234, 230, 0.15);
+  color: #07eae6;
+  border: 1px solid rgba(7, 234, 230, 0.3);
+  box-shadow: 0 0 15px rgba(7, 234, 230, 0.15);
+}
+
+/* --- 5. Inputs & Textareas Override --- */
+.anonymous-page-wrapper input,
+.anonymous-page-wrapper textarea {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.anonymous-page-wrapper input:focus,
+.anonymous-page-wrapper textarea:focus {
+  border-color: #07eae6 !important;
+  box-shadow: 0 0 0 2px rgba(7, 234, 230, 0.15) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* --- 6. Utility Animations --- */
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

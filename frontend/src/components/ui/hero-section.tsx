@@ -15,11 +15,11 @@ export const HeroSection = () => {
   const { user, token } = useAuth();
 
   return (
-    <section className="hero-section">
+    <section className="hero-section h-screen h-full">
       {/* Background */}
-      <div className="hero-bg-wrapper">
+      <div className="hero-bg-wrapper h-full">
         <div
-          className="hero-bg-image"
+          className="hero-bg-image h-screen"
           style={{ backgroundImage: `url(${heroImage})` }}
           role="img"
           aria-label="College community background"
