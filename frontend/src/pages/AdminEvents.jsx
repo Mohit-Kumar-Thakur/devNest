@@ -5,7 +5,7 @@ import {
   updateEvent,
   deleteEvent,
 } from "../api/Events";
-import AdminEventCard from "../components/AdminEventCard";
+import "../styles/AdminEvents.css";
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
@@ -17,7 +17,7 @@ const AdminEvents = () => {
     description: "",
     registrationLink: "",
     image: "",
-    platform: "",   // 👈 now user can type platform manually
+    platform: "",
   });
 
   const [editing, setEditing] = useState(null);
@@ -31,12 +31,15 @@ const AdminEvents = () => {
     getEvents().then((data) => setEvents(data));
   };
 
-  // ➤ Add New Event
   const handleAdd = async () => {
+    if (!form.title || !form.date) {
+      alert("Please fill in at least the title and date!");
+      return;
+    }
+
     const saved = await addEvent(form);
     setEvents([...events, saved]);
 
-    // Reset form
     setForm({
       title: "",
       organizer: "",
@@ -45,18 +48,16 @@ const AdminEvents = () => {
       description: "",
       registrationLink: "",
       image: "",
-      platform: "",   // 👈 reset empty
+      platform: "",
     });
   };
 
-  // ➤ Start Editing
   const openEditModal = (event) => {
     setEditing(event);
     setForm({ ...event });
     setShowModal(true);
   };
 
-  // ➤ Save Edits
   const handleUpdate = async () => {
     const updated = await updateEvent(editing._id, form);
     setEvents(events.map((e) => (e._id === updated._id ? updated : e)));
@@ -65,166 +66,192 @@ const AdminEvents = () => {
     setEditing(null);
   };
 
-  // ➤ Delete Event
   const handleDelete = async (id) => {
-    await deleteEvent(id);
-    setEvents(events.filter((e) => e._id !== id));
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      await deleteEvent(id);
+      setEvents(events.filter((e) => e._id !== id));
+    }
   };
 
   return (
-    <div style={{ padding: "30px", color: "white" }}>
-      <h1 style={{ marginBottom: "20px" }}>Admin Event Manager</h1>
+    <div className="admin-page-wrapper">
+      <nav className="admin-navbar">
+        <div className="admin-navbar-content">
+          <div className="admin-navbar-left">
+            <h1 className="admin-navbar-logo">devNest Admin</h1>
+            <span className="admin-badge">Admin Panel</span>
+          </div>
+          
+          <div className="admin-navbar-right">
+            <a href="/dashboard" className="admin-nav-btn admin-nav-btn-primary">
+              <svg className="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/course-updates" className="admin-nav-btn admin-nav-btn-secondary">
+              <svg className="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <span>Course Updates</span>
+            </a>
+            
+            <a href="/events" className="admin-nav-btn admin-nav-btn-orange">
+              <svg className="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>Events</span>
+            </a>
+          </div>
+        </div>
+      </nav>
 
-      {/* 🔥 Add Event Form */}
-      <div
-        style={{
-          background: "#1b1b1b",
-          padding: "20px",
-          borderRadius: "12px",
-          marginBottom: "30px",
-        }}
-      >
-        <h2 style={{ marginBottom: "15px" }}>Add New Event</h2>
+      <div className="admin-container">
+        <h1 className="admin-title">Event Management Dashboard</h1>
 
-        <div style={{ display: "grid", gap: "10px" }}>
-          {Object.keys(form).map(
-            (field) =>
-              field !== "_id" &&
-              field !== "__v" && (
+        <div className="add-event-form">
+          <h2 className="form-title">Create New Event</h2>
+
+          <div className="form-grid">
+            {Object.keys(form).map((field) =>
+              field !== "_id" && field !== "__v" ? (
                 <input
                   key={field}
+                  className="admin-input"
                   placeholder={field}
                   value={form[field]}
                   onChange={(e) =>
                     setForm({ ...form, [field]: e.target.value })
                   }
-                  style={{
-                    padding: "10px",
-                    borderRadius: "6px",
-                    border: "none",
-                    background: "#333",
-                    color: "white",
-                  }}
                 />
-              )
-          )}
+              ) : null
+            )}
+          </div>
+
+          <button className="add-event-btn" onClick={handleAdd}>
+            <span>➕</span>
+            <span>Add Event</span>
+          </button>
         </div>
 
-        <button
-          onClick={handleAdd}
-          style={{
-            background: "#00c853",
-            border: "none",
-            marginTop: "15px",
-            padding: "12px 20px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            color: "white",
-          }}
-        >
-          ➕ Add Event
-        </button>
-      </div>
+        {events.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">📅</div>
+            <div className="empty-state-text">No events yet</div>
+            <div className="empty-state-subtext">
+              Create your first event using the form above
+            </div>
+          </div>
+        ) : (
+          <div className="admin-events-grid">
+            {events.map((ev) => (
+              <div
+                key={ev._id}
+                className="admin-event-card"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  e.currentTarget.style.setProperty("--mouse-x", `${x}%`);
+                  e.currentTarget.style.setProperty("--mouse-y", `${y}%`);
+                }}
+              >
+                {ev.image && (
+                  <img
+                    src={ev.image}
+                    alt={ev.title}
+                    className="admin-card-image"
+                  />
+                )}
 
-      {/* 🔥 Events Grid */}
-      <div
-        className="events-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {events.map((ev) => (
-          <AdminEventCard
-            key={ev._id}
-            event={ev}
-            onEdit={openEditModal}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
+                <h3 className="admin-card-title">{ev.title}</h3>
 
-      {/* 🔥 Edit Modal */}
-      {showModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.7)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 999,
-          }}
-        >
-          <div
-            style={{
-              background: "#1e1e1e",
-              padding: "25px",
-              borderRadius: "12px",
-              width: "400px",
-            }}
-          >
-            <h2>Edit Event</h2>
+                <div className="admin-card-info">
+                  <strong>📅 Date:</strong> {ev.date}
+                </div>
 
-            {Object.keys(form).map(
-              (field) =>
-                !["_id", "__v"].includes(field) && (
+                {ev.organizer && (
+                  <div className="admin-card-info">
+                    <strong>👤 Organizer:</strong> {ev.organizer}
+                  </div>
+                )}
+
+                {ev.location && (
+                  <div className="admin-card-info">
+                    <strong>📍 Location:</strong> {ev.location}
+                  </div>
+                )}
+
+                {ev.platform && (
+                  <div className="admin-card-info">
+                    <strong>💻 Platform:</strong> {ev.platform}
+                  </div>
+                )}
+
+                {ev.description && (
+                  <div className="admin-card-info" style={{ display: "block", marginTop: "10px" }}>
+                    <strong>📝 Description:</strong>
+                    <div style={{ marginTop: "5px", lineHeight: "1.5" }}>
+                      {ev.description}
+                    </div>
+                  </div>
+                )}
+
+                <div className="card-actions">
+                  <button
+                    className="edit-btn"
+                    onClick={() => openEditModal(ev)}
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(ev._id)}
+                  >
+                    🗑️ Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-box">
+              <h2 className="modal-title">Edit Event</h2>
+
+              {Object.keys(form).map((field) =>
+                !["_id", "__v"].includes(field) ? (
                   <input
                     key={field}
+                    className="modal-input"
                     placeholder={field}
                     value={form[field]}
                     onChange={(e) =>
                       setForm({ ...form, [field]: e.target.value })
                     }
-                    style={{
-                      width: "100%",
-                      padding: "10px",
-                      margin: "10px 0",
-                      borderRadius: "6px",
-                      border: "none",
-                      background: "#333",
-                      color: "white",
-                    }}
                   />
-                )
-            )}
+                ) : null
+              )}
 
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <button
-                onClick={() => setShowModal(false)}
-                style={{
-                  background: "#777",
-                  padding: "10px 20px",
-                  borderRadius: "6px",
-                  border: "none",
-                  color: "white",
-                }}
-              >
-                Cancel
-              </button>
+              <div className="modal-actions">
+                <button
+                  className="cancel-btn"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
 
-              <button
-                onClick={handleUpdate}
-                style={{
-                  background: "#ffb400",
-                  padding: "10px 20px",
-                  borderRadius: "6px",
-                  border: "none",
-                  fontWeight: "bold",
-                }}
-              >
-                Save Changes
-              </button>
+                <button className="save-btn" onClick={handleUpdate}>
+                  💾 Save Changes
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

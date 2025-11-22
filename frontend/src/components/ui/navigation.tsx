@@ -29,7 +29,6 @@ export const Navigation = () => {
     }
   };
 
-  // Handle navigation click for protected routes
   const handleProtectedNavigation = (href: string, isProtected: boolean) => {
     if (isProtected && !token) {
       navigate(`/auth?redirect=${href}`);
@@ -41,144 +40,333 @@ export const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden">
-                <img 
-                  src={logoImage} 
-                  alt="devNest Logo" 
-                  className="w-full h-full object-cover"
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .glossy-nav {
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          background: rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          border-bottom: 1px solid rgba(7, 234, 230, 0.15);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        .nav-content {
+          max-width: 1600px;
+          margin: 0 auto;
+          padding: 0 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 64px;
+        }
+        .nav-logo-section {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .nav-logo-image {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 2px solid rgba(7, 234, 230, 0.3);
+          box-shadow: 0 0 15px rgba(7, 234, 230, 0.2);
+        }
+        .nav-logo-text {
+          font-size: 20px;
+          font-weight: 700;
+          letter-spacing: -0.5px;
+        }
+        .nav-logo-gray { color: #9ca3af; }
+        .nav-logo-primary {
+          background: linear-gradient(135deg, #07eae6 0%, #05b8b5 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .nav-logo-orange { color: #ff9800; }
+
+        .nav-items { display: none; align-items: center; gap: 8px; }
+        @media (min-width: 768px) { .nav-items { display: flex; } }
+
+        .nav-item-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 18px;
+          border-radius: 10px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s;
+          position: relative;
+          overflow: hidden;
+        }
+        .nav-item-btn:hover {
+          background: rgba(7,234,230,0.15);
+          border-color: rgba(7,234,230,0.3);
+          color: #07eae6;
+          transform: translateY(-2px);
+        }
+
+        .nav-actions { display: none; align-items: center; gap: 12px; }
+        @media (min-width: 768px) { .nav-actions { display: flex; } }
+
+        .nav-icon-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          color: rgba(255, 255, 255, 0.7);
+          cursor: pointer;
+          transition: all 0.3s;
+          position: relative;
+        }
+        .nav-icon-btn:hover {
+          background: rgba(7,234,230,0.1);
+          border-color: rgba(7,234,230,0.3);
+          color: #07eae6;
+        }
+
+        .notification-dot {
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 8px;
+          height: 8px;
+          background: #ff9800;
+          border-radius: 50%;
+          box-shadow: 0 0 10px rgba(255,152,0,0.5);
+        }
+
+        .glossy-signin-btn {
+          padding: 10px 24px;
+          border-radius: 10px;
+          border: 1px solid rgba(7,234,230,0.5);
+          background: linear-gradient(135deg,rgba(7,234,230,1),rgba(5,184,181,1));
+          color: #000;
+          font-size: 14px;
+          font-weight: 700;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-block;
+        }
+
+        .glossy-logout-btn {
+          padding: 5px 10px;
+          border-radius: 10px;
+          border: 0px solid rgba(244,67,54,0.5);
+          background: linear-gradient(135deg,rgba(7, 234, 230, 0.55),rgba(5,184,181,1));
+          color: white;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+        }
+
+        .mobile-menu-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          border: 1px solid rgba(7,234,230,0.3);
+          color: #07eae6;
+        }
+        @media (min-width: 768px) { .mobile-menu-btn { display: none; } }
+
+        .mobile-menu { display: block; }
+        @media (min-width: 768px) { .mobile-menu { display: none; } }
+
+        .mobile-menu-content {
+          padding: 1rem 0;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .mobile-nav-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.02);
+          cursor: pointer;
+        }
+      `}} />
+
+      <nav className="glossy-nav">
+        <div className="nav-content">
+
+          <div className="nav-logo-section">
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+              <div className="nav-logo-image">
+                <img
+                  src={logoImage}
+                  alt="devNest Logo"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
-              <h1 className="text-xl font-bold">
-                <span className="text-logo-gray">dev</span>
-                <span className="text-primary">Ne</span>
-                <span className="text-logo-orange">st</span>
+              <h1 className="nav-logo-text">
+                <span className="nav-logo-gray">dev</span>
+                <span className="nav-logo-primary">Ne</span>
+                <span className="nav-logo-orange">st</span>
               </h1>
             </Link>
           </div>
 
-          {/* Desktop Navigation - Show ALL items */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="nav-items">
             {navigationItems.map((item) => (
               <button
                 key={item.name}
+                type="button"
+                aria-label={item.name}
+                title={item.name}
                 onClick={() => handleProtectedNavigation(item.href, item.protected)}
-                className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-smooth cursor-pointer"
+                className="nav-item-btn"
               >
-                <item.icon className="w-4 h-4" />
-                <span className="font-medium">{item.name}</span>
+                <item.icon style={{ width: '16px', height: '16px' }} />
+                <span>{item.name}</span>
               </button>
             ))}
           </div>
 
-          {/* Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="nav-actions">
             {token && (
               <>
-                <Button variant="ghost" size="sm" className="relative">
-                  <Bell className="w-4 h-4" />
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full"></span>
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Search className="w-4 h-4" />
-                </Button>
+                <button
+                  type="button"
+                  aria-label="Notifications"
+                  title="Notifications"
+                  className="nav-icon-btn"
+                >
+                  <Bell style={{ width: '18px', height: '18px' }} />
+                  <span className="notification-dot"></span>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Search"
+                  title="Search"
+                  className="nav-icon-btn"
+                >
+                  <Search style={{ width: '18px', height: '18px' }} />
+                </button>
               </>
             )}
-            
+
             {!token && (
-              <Button variant="ghost" size="sm">
-                <Search className="w-4 h-4" />
-              </Button>
+              <button
+                type="button"
+                aria-label="Search"
+                title="Search"
+                className="nav-icon-btn"
+              >
+                <Search style={{ width: '18px', height: '18px' }} />
+              </button>
             )}
 
-            {/* User/Login Section */}
             {token ? (
-              <div className="flex items-center space-x-3">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleLogoutWithConfirmation}
-                  className="gradient-primary text-primary-foreground shadow-soft"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </Button>
-              </div>
+              <button
+                type="button"
+                aria-label="Logout"
+                title="Logout"
+                onClick={handleLogoutWithConfirmation}
+                className="glossy-logout-btn"
+              >
+                <LogOut style={{ width: '16px', height: '16px' }} />
+                Logout
+              </button>
             ) : (
-              <Button className="gradient-primary text-primary-foreground shadow-soft" asChild>
-                <Link to="/auth">Sign In</Link>
-              </Button>
+              <Link to="/auth" className="glossy-signin-btn">
+                Sign In
+              </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden"
+          <button
+            type="button"
+            aria-label="Toggle Menu"
+            title="Toggle Menu"
+            className="mobile-menu-btn"
             onClick={() => setIsOpen(!isOpen)}
           >
-            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </Button>
+            {isOpen ?
+              <X style={{ width: '20px', height: '20px' }} /> :
+              <Menu style={{ width: '20px', height: '20px' }} />}
+          </button>
         </div>
 
-        {/* Mobile Navigation - Show ALL items */}
         {isOpen && (
-          <div className="md:hidden border-t border-border">
-            <div className="py-4 space-y-2">
-              {/* Navigation Items - Show ALL */}
+          <div className="mobile-menu">
+            <div className="mobile-menu-content">
+
               {navigationItems.map((item) => (
                 <button
+                  type="button"
+                  aria-label={item.name}
+                  title={item.name}
                   key={item.name}
                   onClick={() => handleProtectedNavigation(item.href, item.protected)}
-                  className="flex items-center space-x-3 w-full text-left px-4 py-2 text-muted-foreground hover:text-primary hover:bg-secondary rounded-lg transition-smooth"
+                  className="mobile-nav-item"
                 >
-                  <item.icon className="w-4 h-4" />
+                  <item.icon style={{ width: '18px', height: '18px' }} />
                   <span>{item.name}</span>
                 </button>
               ))}
 
-              {/* Auth Section */}
-              <div className="px-4 pt-4 border-t border-border space-y-3">
+              <div className="mobile-auth-section">
                 {token ? (
                   <>
-                    {/* User Info */}
-                    <div className="flex items-center space-x-3 px-2 py-2 bg-secondary rounded-lg">
-                      <User className="w-4 h-4 text-primary" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{user?.name}</p>
-                        <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    <div className="mobile-user-info">
+                      <User style={{ width: '18px', height: '18px', color: '#07eae6' }} />
+                      <div style={{ flex: 1 }}>
+                        <p className="mobile-user-name">{user?.name}</p>
+                        <p className="mobile-user-email">{user?.email}</p>
                       </div>
                     </div>
-                    
-                    {/* Logout Button */}
-                    <Button 
-                      variant="outline" 
-                      className="w-full text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
+
+                    <button
+                      type="button"
+                      aria-label="Logout"
+                      title="Logout"
+                      className="glossy-logout-btn"
+                      style={{ width: '100%', justifyContent: 'center' }}
                       onClick={handleLogoutWithConfirmation}
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
+                      <LogOut style={{ width: '16px', height: '16px' }} />
                       Logout
-                    </Button>
+                    </button>
                   </>
                 ) : (
-                  <Button 
-                    className="w-full gradient-primary text-primary-foreground" 
-                    onClick={() => handleProtectedNavigation('/auth', false)}
+                  <Link
+                    to="/auth"
+                    className="glossy-signin-btn"
+                    style={{ width: '100%', textAlign: 'center' }}
+                    onClick={() => setIsOpen(false)}
                   >
                     Sign In
-                  </Button>
+                  </Link>
                 )}
               </div>
+
             </div>
           </div>
         )}
-      </div>
-    </nav>
+
+      </nav>
+    </>
   );
 };

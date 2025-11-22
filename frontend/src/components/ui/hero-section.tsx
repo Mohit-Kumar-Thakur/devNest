@@ -1,9 +1,9 @@
-import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, MessageCircle, Calendar, Rocket } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { CountUp } from '@/components/ui/count-up';
-import heroImage from '@/assets/landing-bg.jpg'; // using this now
+import heroImage from '@/assets/landing-bg.jpg';
+import '@/styles/hero-styles.css';
 
 const stats = [
   { icon: Users, label: 'Active Students', value: 2500 },
@@ -15,134 +15,130 @@ export const HeroSection = () => {
   const { user, token } = useAuth();
 
   return (
-    <section className="relative min-h-[600px] gradient-hero overflow-hidden">
-      
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      />
-
-      {/* Dark Overlay for 20–30% visible image */}
-      <div className="absolute inset-0 bg-black/70 z-0" />
-
-
-      {/* Content */}
-      <div className="relative container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center animate-fadeIn">
-
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            {token ? (
-              <>
-                Welcome back,{' '}
-                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                  {user?.name}!
-                </span>
-              </>
-            ) : (
-              <>
-                Your College{' '}
-                <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                  Community Hub
-                </span>
-              </>
-            )}
-          </h1>
-
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            {token
-              ? `Ready to explore course updates, share your thoughts, and discover exciting events? Your community awaits!`
-              : `Stay connected with course updates, share thoughts anonymously, discover events, and build lasting connections in your academic community.`}
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            {token ? (
-              <>
-                <Button
-                  size="lg"
-                  className="gradient-primary text-primary-foreground shadow-hover transition-bounce group"
-                  asChild
-                >
-                  <Link to="/dashboard">
-                    Go to Dashboard
-                    <Rocket className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-smooth" />
-                  </Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-primary/20 hover:bg-primary/5"
-                  asChild
-                >
-                  <Link to="/events">
-                    Explore Events
-                  </Link>
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  size="lg"
-                  className="gradient-primary text-primary-foreground shadow-hover transition-bounce group"
-                  asChild
-                >
-                  <Link to="/auth">
-                    Get Started
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-smooth" />
-                  </Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-primary/20 hover:bg-primary/5"
-                >
-                  Learn More
-                </Button>
-              </>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-slideUp">
-            {stats.map((stat, index) => (
-              <div
-                key={stat.label}
-                className="text-center group"
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl mb-3 group-hover:bg-primary/20 transition-smooth">
-                  <stat.icon className="w-6 h-6 text-primary" />
-                </div>
-
-                <div className="text-2xl font-bold text-foreground mb-1">
-                  <CountUp
-                    value={stat.value}
-                    duration={2.5}
-                    suffix={stat.label.includes('Events') ? '' : '+'}
-                    separator=","
-                    triggerOnView
-                    animationStyle="spring"
-                    colorScheme="default"
-                    className="text-2xl"
-                  />
-                </div>
-
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {token && (
-            <div className="mt-8 p-4 bg-primary/5 rounded-lg border border-primary/20 max-w-md mx-auto">
-              <p className="text-sm text-primary">
-                <strong>Welcome back!</strong> You're all set to explore everything devNest has to offer.
-              </p>
-            </div>
-          )}
-        </div>
+    <section className="hero-section">
+      {/* Background */}
+      <div className="hero-bg-wrapper">
+        <div
+          className="hero-bg-image"
+          style={{ backgroundImage: `url(${heroImage})` }}
+          role="img"
+          aria-label="College community background"
+        />
+        <div className="hero-bg-overlay" />
+        
+        {/* Animated Glow Spots */}
+        <div className="hero-glow-spot hero-glow-spot-1" aria-hidden="true" />
+        <div className="hero-glow-spot hero-glow-spot-2" aria-hidden="true" />
       </div>
 
-      <div className="absolute top-20 left-10 w-20 h-20 bg-primary/5 rounded-full blur-xl animate-pulse"></div>
-      <div className="absolute bottom-20 right-10 w-32 h-32 bg-accent/5 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      {/* Content */}
+      <div className="hero-content hero-animate-fade-in">
+        {/* Title */}
+        <h1 className="hero-title">
+          {token ? (
+            <>
+              <span className="hero-title-white">Welcome back, </span>
+              <span className="hero-title-accent">{user?.name}!</span>
+            </>
+          ) : (
+            <>
+              <span className="hero-title-white">Your College </span>
+              <span className="hero-title-accent">Community Hub</span>
+            </>
+          )}
+        </h1>
+
+        {/* Description */}
+        <p className="hero-description">
+          {token
+            ? `Ready to explore course updates, share your thoughts, and discover exciting events? Your community awaits!`
+            : `Stay connected with course updates, share thoughts anonymously, discover events, and build lasting connections in your academic community.`}
+        </p>
+
+        {/* Buttons */}
+        <div className="hero-buttons-group">
+          {token ? (
+            <>
+              <Link
+                to="/dashboard"
+                className="hero-btn-primary"
+                title="Go to your dashboard"
+              >
+                <span>Go to Dashboard</span>
+                <Rocket className="hero-btn-icon w-5 h-5" />
+              </Link>
+              <Link
+                to="/events"
+                className="hero-btn-secondary"
+                title="Explore upcoming events"
+              >
+                <span>Explore Events</span>
+                <ArrowRight className="hero-btn-icon w-5 h-5" />
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/auth"
+                className="hero-btn-primary"
+                title="Create an account or login"
+              >
+                <span>Get Started</span>
+                <ArrowRight className="hero-btn-icon w-5 h-5" />
+              </Link>
+              <button
+                className="hero-btn-secondary"
+                onClick={() => {
+                  const element = document.querySelector('[data-section="features"]');
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                title="Learn more about devNest"
+              >
+                <span>Learn More</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Stats Grid */}
+        <div className="hero-stats-grid hero-animate-slide-up">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className="hero-stat-card"
+              style={{ animationDelay: `${index * 0.15}s` }}
+            >
+              <div className="hero-stat-icon">
+                <stat.icon className="w-6 h-6" />
+              </div>
+
+              <div className="hero-stat-value">
+                <CountUp
+                  value={stat.value}
+                  duration={2.5}
+                  suffix={stat.label.includes('Events') ? '' : '+'}
+                  separator=","
+                  triggerOnView
+                  animationStyle="spring"
+                  colorScheme="default"
+                  className="text-2xl"
+                />
+              </div>
+
+              <div className="hero-stat-label">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Welcome Message */}
+        {token && (
+          <div className="hero-welcome-card">
+            <p className="hero-welcome-text">
+              <strong>Welcome back!</strong> You're all set to explore everything devNest has to offer.
+            </p>
+          </div>
+        )}
+      </div>
     </section>
   );
 };
