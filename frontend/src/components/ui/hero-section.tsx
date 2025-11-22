@@ -19,7 +19,7 @@ export const HeroSection = () => {
     <section className="relative min-h-[600px] gradient-hero overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 flex items-center justify-center z-0">
-        <div className="w-[4200px] h-[900px]">
+        <div className="w-[4200px] h-[800px]">
           <Spline scene="https://prod.spline.design/KfiqpIbAsWzPAjUU/scene.splinecode" />
         </div>
       </div>

@@ -46,15 +46,9 @@ const App = () => (
           
           {/* Add these routes */}
           <Route path="/admin-register" element={<AdminRegister />} />
-          <Route 
-            path="/admin-dashboard" 
-            element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            } 
-          />
+          <Route path="/admin-dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           
+          {/*Authentication route*/}
           <Route path="/send-otp" element={<SendOTP/>} />
           <Route path="/reset-password" element={<ResetPassword/>} />
           <Route path="/verify-email" element={<VerifyEmail/>} />
