@@ -7,6 +7,7 @@ import { BookOpen, MessageSquare, Calendar, Users, Zap, Shield } from 'lucide-re
 import logoImage from '@/assets/logo.png';
 import footerLogoImage from '@/assets/devnest-footer-logo.png';
 import Spline from '@splinetool/react-spline';
+import FloatingChatbot from "@/chatbot/FloatingChatbot";
 
 const Index = () => {
   const courseUpdates = [
@@ -144,6 +145,7 @@ const Index = () => {
           <p className="text-sm text-muted-foreground">© 2025 devNest. Made with ❤️ for students.</p>
         </div>
       </footer>
+      <FloatingChatbot/>
     </div>
   );
 };
