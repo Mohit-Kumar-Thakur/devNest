@@ -16,8 +16,6 @@ import adminRoutes from "./routes/AdminRoutes.js";
 // Chatbot
 import groqRoute from "./routes/groq.js";
 
-
-
 // Cron Job
 import fetchAllEvents from "./cron/fetchEvents.js";
 
