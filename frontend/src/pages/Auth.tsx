@@ -3,11 +3,9 @@ import { login, registerUser, googleLogin } from "@/api/auth";
 import { useAuth } from "@/context/AuthContext";
 import { GoogleLogin } from "@react-oauth/google";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { PasswordStrengthIndicator } from "@/components/ui/password-strength-indicator";
 import { Shield } from "lucide-react";
+import "../styles/auth-styles.css";
 
 const vertexShaderSource = `
   attribute vec4 a_position;
@@ -258,117 +256,143 @@ export default function Auth() {
         <>
             <ShaderBackground color="#07eae6" />
             <div className="relative flex justify-center items-center min-h-screen p-4 z-10">
-                <Card className="w-full max-w-md shadow-2xl border-0 bg-slate-900/80 backdrop-blur-xl text-white">
-                    <CardHeader>
-                        <CardTitle className="text-center text-2xl text-white">
+                <div className="auth-card w-full max-w-md">
+                    {/* Card Header */}
+                    <div className="auth-card-header">
+                        <h1 className="auth-card-title">
                             {isLogin ? "Login" : "Register"}
-                        </CardTitle>
-                    </CardHeader>
+                        </h1>
+                    </div>
 
-                    <CardContent className="space-y-4">
+                    {/* Card Content */}
+                    <div className="auth-card-content">
+                        {/* Error Message */}
                         {error && (
-                            <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded text-sm">
+                            <div className="auth-error" role="alert">
                                 {error}
                             </div>
                         )}
 
-                        <div className="space-y-4">
+                        {/* Form Fields */}
+                        <form onSubmit={submit} className="space-y-4">
+                            {/* Name Input (Register Only) */}
                             {!isLogin && (
-                                <Input
+                                <input
+                                    type="text"
                                     placeholder="Name"
                                     value={form.name}
                                     onChange={e => setForm({ ...form, name: e.target.value })}
                                     required
-                                    className="bg-black/50 border-slate-700 text-white placeholder:text-slate-400"
+                                    className="auth-input w-full"
+                                    aria-label="Full Name"
                                 />
                             )}
 
-                            <Input
-                                placeholder="Email"
+                            {/* Email Input */}
+                            <input
                                 type="email"
+                                placeholder="Email"
                                 value={form.email}
                                 onChange={e => setForm({ ...form, email: e.target.value })}
                                 required
-                                className="bg-black/50 border-slate-700 text-white placeholder:text-slate-400"
+                                className="auth-input w-full"
+                                aria-label="Email Address"
                             />
 
+                            {/* Password Input */}
                             {!isLogin ? (
-                                <PasswordStrengthIndicator
-                                    value={form.password}
-                                    onChange={(value) => setForm({ ...form, password: value })}
-                                    onStrengthChange={setPasswordStrength}
-                                    label="Password"
-                                    placeholder="Enter a strong password"
-                                    showScore={true}
-                                    showScoreNumber={true}
-                                    showVisibilityToggle={true}
-                                />
+                                <div className="auth-password-wrapper">
+                                    <PasswordStrengthIndicator
+                                        value={form.password}
+                                        onChange={(value) => setForm({ ...form, password: value })}
+                                        onStrengthChange={setPasswordStrength}
+                                        label="Password"
+                                        placeholder="Enter a strong password"
+                                        showScore={true}
+                                        showScoreNumber={true}
+                                        showVisibilityToggle={true}
+                                    />
+                                </div>
                             ) : (
-                                <Input
-                                    placeholder="Password"
+                                <input
                                     type="password"
+                                    placeholder="Password"
                                     value={form.password}
                                     onChange={e => setForm({ ...form, password: e.target.value })}
                                     required
-                                    className="bg-black/50 border-slate-700 text-white placeholder:text-slate-400"
+                                    className="auth-input w-full"
+                                    aria-label="Password"
                                 />
                             )}
 
-                            <Button
-                                onClick={submit}
-                                className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold"
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                className="auth-submit-btn"
                                 disabled={loading || (!isLogin && passwordStrength === "weak")}
+                                aria-label={isLogin ? "Login to your account" : "Create new account"}
                             >
                                 {loading ? "Please wait..." : (isLogin ? "Login" : "Register")}
-                            </Button>
+                            </button>
+                        </form>
+
+                        {/* Divider */}
+                        <div className="auth-divider">
+                            <div className="auth-divider-line" />
+                            <div className="auth-divider-text">
+                                <span>Or continue with</span>
+                            </div>
                         </div>
 
-                        <div className="relative my-4">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-slate-700" />
-                            </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-slate-900 text-slate-400">Or continue with</span>
-                            </div>
+                        {/* Google Login */}
+                        <div className="auth-google-wrapper">
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={() => setError("Google Login Failed")}
+                            />
                         </div>
 
-                        <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={() => setError("Google Login Failed")}
-                        />
-
-                        <div className="text-sm text-center">
+                        {/* Toggle Auth Mode */}
+                        <div className="text-center">
                             <button
-                                className="text-cyan-400 hover:text-cyan-300"
-                                onClick={() => setIsLogin(!isLogin)}
                                 type="button"
+                                className="auth-toggle-btn"
+                                onClick={() => {
+                                    setIsLogin(!isLogin);
+                                    setError("");
+                                    setForm({ name: "", email: "", password: "" });
+                                }}
+                                aria-label={isLogin ? "Switch to registration" : "Switch to login"}
                             >
                                 {isLogin ? "Create account" : "Already have an account?"}
                             </button>
                         </div>
 
+                        {/* Forgot Password */}
                         <div className="text-center">
-                            <Link to="/send-otp" className="text-blue-400 text-sm hover:text-blue-300">
+                            <Link 
+                                to="/send-otp" 
+                                className="auth-link"
+                                title="Reset your password"
+                            >
                                 Forgot Password?
                             </Link>
                         </div>
 
-                        <div className="text-center pt-4 border-t border-slate-700">
-                            <p className="text-sm text-slate-400 mb-2">Are you an administrator?</p>
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
-                                asChild
-                                className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
+                        {/* Admin Registration Section */}
+                        <div className="auth-admin-section">
+                            <p className="auth-admin-text">Are you an administrator?</p>
+                            <Link 
+                                to="/admin-register"
+                                className="auth-admin-btn"
+                                title="Access admin registration"
                             >
-                                <Link to="/admin-register">
-                                    <Shield className="w-4 h-4 mr-2" />
-                                    Admin Registration
-                                </Link>
-                            </Button>
+                                <Shield className="w-4 h-4" />
+                                Admin Registration
+                            </Link>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         </>
     );

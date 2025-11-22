@@ -13,6 +13,10 @@ import commentRoutes from "./routes/comments.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/AdminRoutes.js";
 
+// Chatbot
+import groqRoute from "./routes/groq.js";
+
+
 
 // Cron Job
 import fetchAllEvents from "./cron/fetchEvents.js";
@@ -63,6 +67,8 @@ app.use((err, req, res, next) => {
     console.error("Server Error:", err.stack);
     res.status(500).json({ error: "Internal Server Error" });
 });
+
+app.use("/api/groq", groqRoute);
 
 // Start Server
 const PORT = process.env.PORT || 5000;

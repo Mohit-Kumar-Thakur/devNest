@@ -92,6 +92,211 @@ const EMBEDDED_CSS = `
   transition: all 0.3s ease;
 }
 
+/* Glossy Card Styles */
+.glossy-card {
+  background: linear-gradient(
+    135deg,
+    rgba(7, 234, 230, 0.08) 0%,
+    rgba(5, 184, 181, 0.06) 50%,
+    rgba(7, 234, 230, 0.04) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(7, 234, 230, 0.2);
+  border-radius: 16px;
+  padding: 32px;
+  height: 100%;
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 1px 0 0 rgba(7, 234, 230, 0.3),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glossy reflection overlay */
+.glossy-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 100%
+  );
+  border-radius: 16px 16px 0 0;
+  pointer-events: none;
+}
+
+.glossy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 60px 0 rgba(7, 234, 230, 0.4),
+    0 8px 32px 0 rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 0 rgba(7, 234, 230, 0.5),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.3);
+  border-color: rgba(7, 234, 230, 0.4);
+}
+
+.card-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(
+    135deg,
+    rgba(7, 234, 230, 0.2) 0%,
+    rgba(5, 184, 181, 0.15) 100%
+  );
+  border: 1px solid rgba(7, 234, 230, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(7, 234, 230, 0.2);
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+}
+
+.card-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.post-item {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(7, 234, 230, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.post-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(7, 234, 230, 0.25);
+}
+
+.post-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 8px 0;
+}
+
+.post-time {
+  color: rgba(7, 234, 230, 0.8);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.post-content {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 8px 0 0 0;
+}
+
+.post-author {
+  color: rgba(7, 234, 230, 0.9);
+  font-size: 12px;
+  margin: 8px 0 0 0;
+}
+
+/* Glossy Button */
+.glossy-button {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(7, 234, 230, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(7, 234, 230, 1) 0%,
+    rgba(5, 184, 181, 0.95) 50%,
+    rgba(7, 234, 230, 0.9) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #000;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 15px rgba(7, 234, 230, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Top glossy reflection on button */
+.glossy-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 100%
+  );
+  border-radius: 12px 12px 0 0;
+  pointer-events: none;
+}
+
+/* Shine effect on button */
+.glossy-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transition: left 0.5s ease;
+  z-index: 1;
+}
+
+.glossy-button:hover::before {
+  left: 100%;
+}
+
+.glossy-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(7, 234, 230, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  background: linear-gradient(
+    135deg,
+    rgba(7, 234, 230, 1) 0%,
+    rgba(5, 184, 181, 1) 50%,
+    rgba(7, 234, 230, 0.95) 100%
+  );
+}
+
+.glossy-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
 @media screen and (max-width: 768px) {
   .cards-cascade-container {
     height: 550px;
@@ -110,6 +315,9 @@ const EMBEDDED_CSS = `
   }
   .cards-cascade-item.prev {
     transform: translateY(-50%) translateX(40%) scale(0.7);
+  }
+  .glossy-card {
+    padding: 24px;
   }
 }
 
@@ -199,42 +407,39 @@ export const CardsCarousel: React.FC<CardsCarouselProps> = ({ cards }) => {
                   cards.length
                 )}`}
               >
-                <div className="bg-card border border-border rounded-2xl p-8 h-full shadow-xl hover:shadow-2xl transition-all flex flex-col">
+                <div className="glossy-card">
                   {/* Card Header */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
-                      <Icon className="w-6 h-6 text-primary" />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                    <div className="card-icon-wrapper">
+                      <Icon style={{ width: '24px', height: '24px', color: '#07eae6' }} />
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground">
+                    <h3 className="card-title">
                       {card.title}
                     </h3>
                   </div>
 
                   {/* Description */}
-                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                  <p className="card-description" style={{ marginBottom: '24px' }}>
                     {card.description}
                   </p>
 
                   {/* Posts/Items */}
-                  <div className="flex-1 space-y-4 mb-6">
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
                     {card.posts.map((post, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-muted/30 rounded-lg p-4 border border-border/50"
-                      >
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <h4 className="font-semibold text-foreground text-sm">
+                      <div key={idx} className="post-item">
+                        <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: '8px', marginBottom: '8px' }}>
+                          <h4 className="post-title">
                             {post.title}
                           </h4>
-                          <span className="text-muted-foreground text-xs whitespace-nowrap">
+                          <span className="post-time">
                             {post.time}
                           </span>
                         </div>
-                        <p className="text-muted-foreground text-xs leading-relaxed">
+                        <p className="post-content">
                           {post.content}
                         </p>
                         {post.author && (
-                          <p className="text-primary text-xs mt-2">
+                          <p className="post-author">
                             by {post.author}
                           </p>
                         )}
@@ -243,10 +448,7 @@ export const CardsCarousel: React.FC<CardsCarouselProps> = ({ cards }) => {
                   </div>
 
                   {/* Button */}
-                  <a
-                    href={card.href}
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-300 text-center"
-                  >
+                  <a href={card.href} className="glossy-button">
                     {card.buttonText}
                   </a>
                 </div>
@@ -257,22 +459,28 @@ export const CardsCarousel: React.FC<CardsCarouselProps> = ({ cards }) => {
 
         {/* Navigation Arrows */}
         <button
-          className="cards-cascade-arrow cards-cascade-arrow-left text-primary hover:text-primary/70 transition-all duration-300"
+          className="cards-cascade-arrow cards-cascade-arrow-left"
           onClick={(e) => {
             e.stopPropagation();
             navigate('prev');
           }}
           aria-label="Previous card"
+          style={{ color: '#07eae6', transition: 'all 0.3s ease' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#05b8b5'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#07eae6'}
         >
           <ArrowLeftCircle size={40} />
         </button>
         <button
-          className="cards-cascade-arrow cards-cascade-arrow-right text-primary hover:text-primary/70 transition-all duration-300"
+          className="cards-cascade-arrow cards-cascade-arrow-right"
           onClick={(e) => {
             e.stopPropagation();
             navigate('next');
           }}
           aria-label="Next card"
+          style={{ color: '#07eae6', transition: 'all 0.3s ease' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#05b8b5'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#07eae6'}
         >
           <ArrowRightCircle size={40} />
         </button>
