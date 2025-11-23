@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { User, Flag, MessageSquare } from 'lucide-react';
 
 export type AdminTab = 'anonymous' | 'flagged' | 'analytics';
@@ -10,31 +9,28 @@ interface AdminTabsProps {
 
 export const AdminTabs = ({ activeTab, onTabChange }: AdminTabsProps) => {
   return (
-    <div className="flex space-x-1 bg-white p-1 rounded-lg shadow-sm border mb-6">
-      <Button
-        variant={activeTab === 'anonymous' ? 'default' : 'ghost'}
+    <div className="admin-tabs-container">
+      <button
         onClick={() => onTabChange('anonymous')}
-        className="flex-1"
+        className={`admin-tab ${activeTab === 'anonymous' ? 'active' : ''}`}
       >
         <User className="w-4 h-4 mr-2" />
         All Anonymous Chats
-      </Button>
-      <Button
-        variant={activeTab === 'flagged' ? 'default' : 'ghost'}
+      </button>
+      <button
         onClick={() => onTabChange('flagged')}
-        className="flex-1"
+        className={`admin-tab ${activeTab === 'flagged' ? 'active' : ''}`}
       >
         <Flag className="w-4 h-4 mr-2" />
         Flagged Content
-      </Button>
-      <Button
-        variant={activeTab === 'analytics' ? 'default' : 'ghost'}
+      </button>
+      <button
         onClick={() => onTabChange('analytics')}
-        className="flex-1"
+        className={`admin-tab ${activeTab === 'analytics' ? 'active' : ''}`}
       >
         <MessageSquare className="w-4 h-4 mr-2" />
         Analytics
-      </Button>
+      </button>
     </div>
   );
 };

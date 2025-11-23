@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Search, Eye, User, RefreshCw } from 'lucide-react';
+import { Search, Eye, User, RefreshCw, MessageSquare, Trash2 } from 'lucide-react';
 import { AuthorDetailsSidebar } from './AuthorDetailsSidebar';
 import { useAdmin } from '@/hooks/useAdmin';
 
@@ -30,8 +27,9 @@ export const AnonymousPostsTab = ({
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [identifyingPost, setIdentifyingPost] = useState<string | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   
-  const { loading, error, fetchAnonymousPosts, identifyPostAuthor } = useAdmin();
+  const { loading, error, fetchAnonymousPosts, identifyPostAuthor, deletePost } = useAdmin();
 
   useEffect(() => {
     loadPosts();
@@ -53,12 +51,27 @@ export const AnonymousPostsTab = ({
         postCreatedAt: post?.createdAt
       });
       
-      // Update local posts state
       setPosts(prev => prev.map(p => 
         p.id === postId ? { ...p, authorInfo: author } : p
       ));
+      setSelectedPostId(postId);
     }
     setIdentifyingPost(null);
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    
+    const success = await deletePost(postId);
+    if (success) {
+      setPosts(prev => prev.filter(post => post.id !== postId));
+      if (selectedPostId === postId) {
+        onCloseAuthor();
+      }
+      alert('Post deleted successfully');
+    } else {
+      alert('Failed to delete post');
+    }
   };
 
   const filteredPosts = posts.filter(post =>
@@ -68,104 +81,225 @@ export const AnonymousPostsTab = ({
   );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="admin-posts-grid">
       {/* Posts List */}
-      <div className="lg:col-span-2">
-        <Card>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>All Anonymous Chats</CardTitle>
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search chats..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <Button onClick={loadPosts} variant="outline" size="sm" disabled={loading}>
-                  <RefreshCw className="w-4 h-4" />
-                </Button>
-              </div>
+      <div>
+        <div className="admin-glass-card" style={{ overflow: 'visible' }}>
+          <div style={{ 
+            padding: '24px', 
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 'bold', margin: 0, marginBottom: '4px' }}>
+                All Anonymous Posts
+              </h2>
+              <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.6)', margin: 0 }}>
+                {posts.length} posts found • Real-time data
+              </p>
             </div>
-          </CardHeader>
-          <CardContent>
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                {error}
-              </div>
-            )}
+            <button
+              onClick={loadPosts}
+              className="btn-glass-primary"
+              disabled={loading}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '6px 12px'
+              }}
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
 
-            <div className="space-y-4">
-              {filteredPosts.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <User className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p>No chats found</p>
-                </div>
-              ) : (
-                filteredPosts.map((post) => (
-                  <div key={post.id} className="border rounded-lg p-4 bg-white shadow-sm">
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="bg-purple-100 text-purple-800">
-                          {post.author}
-                        </Badge>
-                        {post.authorInfo && (
-                          <Badge variant="default" className="bg-green-100 text-green-800">
-                            ✅ Identified
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {new Date(post.createdAt).toLocaleString()}
-                      </div>
+          {/* Search */}
+          <div style={{ padding: '16px 24px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              gap: '8px'
+            }}>
+              <Search className="w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search posts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  color: 'white',
+                  flex: 1,
+                  fontSize: '0.9rem'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Error Display */}
+          {error && (
+            <div style={{
+              margin: '16px 24px',
+              padding: '12px',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '8px',
+              color: '#f87171',
+              fontSize: '0.875rem'
+            }}>
+              {error}
+            </div>
+          )}
+
+          {/* Posts List */}
+          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+            {loading ? (
+              <div style={{
+                padding: '48px 24px',
+                textAlign: 'center',
+                color: 'rgba(255, 255, 255, 0.5)'
+              }}>
+                <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4" />
+                <p>Loading posts...</p>
+              </div>
+            ) : filteredPosts.length > 0 ? (
+              filteredPosts.map(post => (
+                <div
+                  key={post.id}
+                  className="admin-post-item"
+                  style={{
+                    cursor: 'pointer',
+                    margin: '12px',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    backgroundColor: selectedPostId === post.id ? 'rgba(96, 165, 250, 0.1)' : 'rgba(255, 255, 255, 0.02)',
+                    borderColor: selectedPostId === post.id ? 'rgba(96, 165, 250, 0.4)' : 'rgba(255, 255, 255, 0.08)'
+                  }}
+                >
+                  <div className="admin-post-header">
+                    <div className="admin-post-author">
+                      <span className={`admin-badge ${post.authorInfo ? 'status-identified' : 'status-pending'}`}>
+                        {post.authorInfo ? '✓ IDENTIFIED' : '⏳ ANONYMOUS'}
+                      </span>
                     </div>
-                    
-                    <p className="text-gray-800 mb-4 whitespace-pre-wrap">{post.content}</p>
-                    
-                    <div className="flex justify-between items-center">
-                      <div className="text-sm text-gray-600">
-                        Author Hash: <code className="text-xs">{post.authorHash}</code>
-                      </div>
-                      
-                      <div className="flex space-x-2">
-                        {post.authorInfo ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => onAuthorIdentify({
+                    <span className="admin-post-timestamp">
+                      {new Date(post.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '4px 12px',
+                    borderRadius: '99px',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    background: 'rgba(147, 51, 234, 0.15)',
+                    color: '#c084fc',
+                    border: '1px solid rgba(147, 51, 234, 0.3)',
+                    marginBottom: '8px'
+                  }}>
+                    {post.author}
+                  </span>
+                  <p className="admin-post-content">
+                    {post.content}
+                  </p>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: '12px',
+                    paddingTop: '12px',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <div className="text-sm text-gray-600">
+                      {post.isAnonymous ? 'Posted Anonymously' : 'Regular Post'}
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {post.authorInfo ? (
+                        <button
+                          onClick={() => {
+                            setSelectedPostId(post.id);
+                            onAuthorIdentify({
                               ...post.authorInfo,
                               postContent: post.content,
                               postCreatedAt: post.createdAt
-                            })}
-                            className="text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            View Author
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleIdentifyAuthor(post.id)}
-                            disabled={identifyingPost === post.id || loading}
-                            className="text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white"
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            {identifyingPost === post.id ? 'Identifying...' : 'Reveal Author'}
-                          </Button>
-                        )}
-                      </div>
+                            });
+                          }}
+                          className="btn-glass-success"
+                          title="View author information"
+                          aria-label="View author details"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '6px 12px',
+                            fontSize: '0.75rem'
+                          }}
+                        >
+                          <Eye className="w-3 h-3" />
+                          View
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleIdentifyAuthor(post.id)}
+                          disabled={identifyingPost === post.id || loading}
+                          className="btn-glass-primary"
+                          title="Identify anonymous author"
+                          aria-label="Identify author"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '6px 12px',
+                            fontSize: '0.75rem'
+                          }}
+                        >
+                          <Eye className="w-3 h-3" />
+                          {identifyingPost === post.id ? 'Identifying...' : 'Identify'}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeletePost(post.id)}
+                        className="btn-glass-danger"
+                        title="Delete this post"
+                        aria-label="Delete post"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          padding: '6px 12px',
+                          fontSize: '0.75rem'
+                        }}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                </div>
+              ))
+            ) : (
+              <div style={{
+                padding: '48px 24px',
+                textAlign: 'center',
+                color: 'rgba(255, 255, 255, 0.5)'
+              }}>
+                <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No anonymous posts found.</p>
+                <p style={{ fontSize: '0.875rem', marginTop: '8px' }}>
+                  {searchTerm ? 'Try a different search term' : 'Anonymous posts will appear here when users post them'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Author Details Sidebar */}
