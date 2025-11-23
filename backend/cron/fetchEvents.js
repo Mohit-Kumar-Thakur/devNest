@@ -1,5 +1,5 @@
 import scrapeUnstop from "../scrapers/unstop.js";
-import scrapeDevpost from "../scrapers/Devpost.js";
+import scrapeDevpost from "../scrapers/devpost.js";
 import scrapeGitHubHackathons from "../scrapers/githubEvents.js"; // if this exists
 
 import Event from "../models/Events.js";
