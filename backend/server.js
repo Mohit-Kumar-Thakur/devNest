@@ -6,7 +6,6 @@ import rateLimit from "express-rate-limit";
 import cron from "node-cron";
 import connectDB from "./config/db.js";
 
-// Routes
 import eventRoutes from "./routes/EventRoutes.js";
 import postRoutes from "./routes/posts.js";
 import commentRoutes from "./routes/comments.js";
@@ -14,17 +13,15 @@ import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/AdminRoutes.js";
 import groqRoute from "./routes/groq.js";
 
-// Cron Job
 import fetchAllEvents from "./cron/fetchEvents.js";
 
 dotenv.config();
 const app = express();
 
-// Logging for debugging env vars
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
 
-// Correct CORS (Required for Render)
+// CORS (Render Ready)
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -40,14 +37,12 @@ app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Rate Limit
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
-app.use(limiter);
-
-// Connect to DB
-connectDB();
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+  })
+);
 
 // API Routes
 app.use("/api/events", eventRoutes);
@@ -57,16 +52,21 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/groq", groqRoute);
 
-// Health Check Route
+// Health Check
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-// Run scraper once
-fetchAllEvents();
+// CONNECT DB FIRST
+connectDB().then(() => {
+  console.log("⚡ DB connected, running scrapers...");
 
-// Cron Job (Every 12 hours)
-cron.schedule("0 */12 * * *", fetchAllEvents);
+  // Run scrapers once after DB is ready
+  fetchAllEvents();
+
+  // Run scraper every 12 hours
+  cron.schedule("0 */12 * * *", fetchAllEvents);
+});
 
 // Error Handler
 app.use((err, req, res, next) => {
