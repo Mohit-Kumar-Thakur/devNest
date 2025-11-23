@@ -6,6 +6,10 @@ import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 import { generateAnonymousName } from '../utils/securityUtils.js';
 
+// --- NEW IMPORT ---
+import checkOffensive from '../middleware/checkOffensive.js'; 
+// ------------------
+
 const router = express.Router();
 
 // Generate anonymous user hash for non-authenticated users (fallback)
@@ -47,9 +51,9 @@ router.get('/', async (req, res) => {
         }
 
         const posts = await Post.find(query)
-           .sort(sort)
-           .skip((page - 1) * limit)
-           .limit(parseInt(limit));
+            .sort(sort)
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
 
         // Add user vote status to each post
         const postsWithUserVotes = posts.map(post => {
@@ -87,7 +91,8 @@ router.get('/', async (req, res) => {
 });
 
 // Create new post (protected route)
-router.post('/', protect, async (req, res) => {
+// --- UPDATED ROUTE: Added 'checkOffensive' middleware here ---
+router.post('/', protect, checkOffensive, async (req, res) => {
     try {
         const userId = req.user.id;
         const userHash = req.user.userHash;

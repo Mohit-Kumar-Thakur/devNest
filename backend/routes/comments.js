@@ -3,6 +3,10 @@ import crypto from 'crypto';
 import Comment from '../models/Comment.js';
 import Post from '../models/Post.js';
 
+// --- NEW IMPORT ---
+import checkOffensive from '../middleware/checkOffensive.js';
+// ------------------
+
 const router = express.Router();
 
 const generateUserHash = (req) => {
@@ -34,7 +38,8 @@ router.get('/post/:postId', async(req, res) => {
 });
 
 // Create comment
-router.post('/', async(req, res) => {
+// --- UPDATED ROUTE: Added 'checkOffensive' middleware here ---
+router.post('/', checkOffensive, async(req, res) => {
     try {
         const userHash = generateUserHash(req);
         const { postId, content, isAnonymous = true } = req.body;
@@ -83,7 +88,7 @@ router.post('/:id/vote', async(req, res) => {
             comment.userVotes.splice(existingVoteIndex, 1);
         }
 
-        if (existingVoteIndex === -1 || comment.userVotes[existingVoteIndex] ?.voteType !== voteType) {
+        if (existingVoteIndex === -1 || comment.userVotes[existingVoteIndex]?.voteType !== voteType) {
             comment.userVotes.push({ userHash, voteType });
             if (voteType === 'up') comment.upvotes++;
             if (voteType === 'down') comment.downvotes++;
