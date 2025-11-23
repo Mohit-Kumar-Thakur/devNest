@@ -1,6 +1,5 @@
 import scrapeUnstop from "../scrapers/unstop.js";
 import scrapeDevpost from "../scrapers/devpost.js";
-// import scrapeGitHubHackathons from "../scrapers/githubEvents.js"; // DISABLED on Render
 
 import Event from "../models/Events.js";
 
@@ -27,14 +26,16 @@ const fetchAllEvents = async () => {
     try { unstop = await scrapeUnstop(); } catch(e) { console.log("Unstop error:", e.message); }
     try { devpost = await scrapeDevpost(); } catch(e) { console.log("Devpost error:", e.message); }
 
-    // ❌ RENDER CANNOT RUN PUPPETEER — DISABLE IN PRODUCTION
+    // ❌ NEVER RUN GITHUB SCRAPER IN PRODUCTION
     if (process.env.NODE_ENV !== "production") {
-        try { 
-            const scrapeGitHubHackathons = (await import("../scrapers/githubEvents.js")).default;
-            github = await scrapeGitHubHackathons(); 
-        } catch {
-            console.log("GitHub scraper disabled in production");
+        try {
+            const scraper = (await import("../scrapers/githubEvents.js")).default;
+            github = await scraper();
+        } catch (e) {
+            console.log("GitHub scraper disabled:", e.message);
         }
+    } else {
+        console.log("GitHub scraper skipped in production.");
     }
 
     let allEvents = [...unstop, ...devpost, ...github];
